@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>松阪小姐今天相亲成功了吗？</title>
+<style>
+  :root {
+    --bg1: #3d1f35;
+    --bg2: #201022;
+    --ink: #4a3342;
+    --accent: #e0528a;
+    --accent2: #b48ad9;
+    --gold: #e8b34a;
+    --muted: #a08a96;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "方正卡通体", "方正卡通简体", "FZKaTong", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background:
+      radial-gradient(1000px 700px at 15% 0%, #4a2540, transparent 60%),
+      radial-gradient(900px 600px at 85% 100%, #2c1838, transparent 60%),
+      var(--bg2);
+    color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  #app {
+    width: 760px; max-width: 96vw; height: 92vh; max-height: 900px;
+    background: #1f1224;
+    border: 1px solid rgba(232,179,74,.35);
+    border-radius: 20px;
+    box-shadow: 0 30px 90px rgba(0,0,0,.55), 0 0 40px rgba(232,82,138,.16);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    padding: 13px 22px;
+    border-bottom: 1px solid rgba(232,179,74,.18);
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(40,22,40,.92), rgba(28,16,30,.88));
+    color: #f7ecf2;
+  }
+  header .title {
+    font-weight: 700; letter-spacing: 2px; font-size: 15px; color: #ffd9e6;
+  }
+  @supports (-webkit-background-clip: text) or (background-clip: text) {
+    header .title {
+      background: linear-gradient(90deg, #ffd9e6, #f7b8cf 55%, #e8b34a);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+  }
+  .head-right { display: flex; align-items: center; gap: 8px; }
+  header .scene {
+    font-size: 12px; color: #ffe3ee; background: rgba(232,82,138,.28);
+    border: 1px solid rgba(244,143,177,.3); padding: 3px 12px; border-radius: 20px;
+  }
+  #btn-log, #btn-save, #btn-load, #btn-audio {
+    font-size: 12px; color: #ffe3ee; letter-spacing: 1px;
+    background: linear-gradient(180deg, rgba(232,82,138,.42), rgba(232,82,138,.22));
+    border: 1px solid rgba(244,143,177,.35); padding: 3px 12px; border-radius: 20px;
+    cursor: pointer; font-family: inherit; transition: all .15s ease;
+  }
+  #btn-log:hover, #btn-save:hover, #btn-load:hover, #btn-audio:hover {
+    background: linear-gradient(180deg, rgba(232,82,138,.62), rgba(232,82,138,.36));
+    box-shadow: 0 0 12px rgba(244,143,177,.5);
+  }
+  #hud {
+    display: flex; gap: 12px; font-size: 12px; color: #d9c8d2;
+    padding: 9px 22px; border-bottom: 1px solid rgba(232,179,74,.15);
+    background: linear-gradient(180deg, rgba(34,19,36,.8), rgba(28,16,30,.72));
+    flex-wrap: wrap;
+  }
+  #hud .chip {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
+    padding: 3px 11px; border-radius: 20px;
+  }
+  #hud .hh { font-size: 13px; }
+  #hud .hh.rose { color: #f48fb1; }
+  #hud .hh.lav { color: #c4a6e8; }
+  #hud .hh.gold { color: #e8b34a; }
+  #hud .hh.outline { color: #e08aa8; }
+  #hud b { color: #fff; font-size: 13px; }
+  #stage {
+    flex: 1; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #fdf6f0, #e8d8d0);
+  }
+  #bg-layer {
+    position: absolute; inset: 0; z-index: 0;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+  }
+  #stage::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(130% 95% at 50% 30%, transparent 60%, rgba(0,0,0,.30) 100%);
+    z-index: 1;
+  }
+  #portrait {
+    position: absolute; bottom: 104px; left: 50%; transform: translateX(-50%);
+    height: 70%; z-index: 2; pointer-events: none;
+  }
+  #portrait img, #portrait svg {
+    height: 100%; width: auto; display: block;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+  }
+  #dialog {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+    padding: 40px 36px 30px;
+    background: linear-gradient(180deg, rgba(30,16,26,0) 0%, rgba(30,16,26,.86) 24%, rgba(24,12,20,.96) 100%);
+    min-height: 166px;
+  }
+  #dialog::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(232,179,74,.7), rgba(244,143,177,.7), transparent);
+  }
+  #name-tag {
+    position: absolute; top: -2px; left: 24px;
+    padding: 5px 18px; border-radius: 10px 10px 0 0;
+    font-weight: 700; font-size: 17px; letter-spacing: 1px; color: #fff;
+    background: rgba(34,18,28,.95);
+    border-left: 4px solid var(--accent);
+    box-shadow: 0 -2px 12px rgba(232,82,138,.28);
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+  #dialog-text { font-size: 19px; line-height: 1.95; color: #fdf4f7; min-height: 66px; text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+  #dialog-text.narration { color: #d7c4cd; }
+  #dialog-text.os { color: #e0d0ea; font-style: italic; }
+  .caret { display: inline-block; animation: blink 1s steps(1) infinite; color: var(--accent); }
+  @keyframes blink { 50% { opacity: 0; } }
+  #hint {
+    position: absolute; bottom: 8px; right: 16px; font-size: 11px; color: #8d7f88;
+    z-index: 4;
+  }
+  #choices {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
+    padding: 22px 26px 24px;
+    background: linear-gradient(180deg, rgba(20,16,24,.55), rgba(20,16,24,.96));
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #choices .q { color: #ffd9e6; font-size: 15px; font-weight: 700; margin-bottom: 4px; letter-spacing: 1px; }
+  #choices button {
+    text-align: left; padding: 13px 18px; font-size: 15px; line-height: 1.5;
+    border: 1px solid rgba(244,143,177,.42); border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,246,250,.97), rgba(255,235,243,.97));
+    color: var(--ink); cursor: pointer; transition: all .18s ease; font-family: inherit;
+    box-shadow: 0 3px 10px rgba(0,0,0,.18);
+  }
+  #choices button:hover {
+    background: linear-gradient(180deg, #fff, #ffe9f1);
+    border-color: var(--accent); transform: translateX(5px);
+    box-shadow: 0 4px 16px rgba(232,82,138,.35);
+  }
+  #choices button:active { transform: scale(.98); }
+  #toast {
+    position: absolute; top: 16px; right: 18px; font-size: 13px; font-weight: 700;
+    color: #fff; background: var(--accent); padding: 6px 14px; border-radius: 20px;
+    opacity: 0; transition: opacity .2s ease; pointer-events: none; z-index: 5;
+  }
+  #toast.show { opacity: 1; }
+  #flash {
+    position: absolute; inset: 0; background: #fff; z-index: 7;
+    opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  }
+  #flash.run { opacity: 1; }
+  #sleep {
+    position: absolute; inset: 0; background: #000; z-index: 7;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #sleep span { color: #fff; font-size: 42px; letter-spacing: 8px; font-weight: 700; }
+  #cg { position: fixed; inset: 0; z-index: 11; background: #000; }
+  #cg img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  #cg-hint { position: absolute; bottom: 16px; right: 22px; color: #fff; font-size: 12px; opacity: .7; }
+  .overlay {
+    position: absolute; inset: 0; background: rgba(26,18,30,.96); color: #f5ecf2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 30px; z-index: 10; overflow-y: auto;
+  }
+  .overlay h1 {
+    font-size: 30px; letter-spacing: 2px; margin-bottom: 10px; color: #fff;
+    text-shadow: 0 2px 8px rgba(232,82,138,.4);
+  }
+  #title h1 {
+    font-family: "方正卡通体", "方正卡通简体", "FZKaTong", "KaiTi", "STKaiti", serif;
+    font-size: 44px; letter-spacing: 5px; line-height: 1.5; color: #ffd9e6;
+  }
+  @supports (-webkit-background-clip: text) or (background-clip: text) {
+    #title h1 {
+      background: linear-gradient(180deg, #ffe0ea, #f78fb3 45%, #e8b34a);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(240,110,160,.6));
+    }
+  }
+  #title {
+    background:
+      linear-gradient(rgba(30,15,24,.42), rgba(26,12,20,.66)),
+      url('images/UI界面.png') center / cover no-repeat;
+  }
+  .overlay .sub { font-size: 20px; color: #f4a8c4; margin-bottom: 10px; letter-spacing: 3px; }
+  .overlay .tagline { font-size: 15px; color: #d3bcc6; margin-bottom: 28px; font-style: italic; letter-spacing: 1px; }
+  .overlay .meta { font-size: 12px; color: #a88a99; margin-bottom: 30px; }
+  .overlay button {
+    padding: 13px 44px; font-size: 16px; border-radius: 30px; border: 1px solid rgba(255,255,255,.25);
+    background: linear-gradient(180deg, #f06a9e, #d8467e); color: #fff; cursor: pointer;
+    letter-spacing: 4px; font-family: inherit; box-shadow: 0 6px 18px rgba(232,82,138,.45);
+    transition: all .15s ease;
+  }
+  .overlay button:hover { filter: brightness(1.08); box-shadow: 0 8px 24px rgba(232,82,138,.6); }
+  .overlay .endbox { font-size: 15px; line-height: 2; color: #e8dbe2; max-width: 520px; }
+  .overlay .endbox em { color: #e8b8cd; font-style: normal; }
+  #backlog { justify-content: flex-start; padding-top: 40px; }
+  #backlog h1 { font-size: 22px; margin-bottom: 16px; }
+  #backlog-list {
+    width: 100%; max-width: 560px; flex: 1; overflow-y: auto;
+    text-align: left; margin-bottom: 16px; padding-right: 6px;
+  }
+  #backlog-list::-webkit-scrollbar { width: 8px; }
+  #backlog-list::-webkit-scrollbar-thumb { background: rgba(120,100,110,.4); border-radius: 4px; }
+  .bl-entry { margin-bottom: 12px; line-height: 1.7; font-size: 14px; }
+  .bl-entry .bl-name { font-weight: 700; margin-right: 6px; }
+  .bl-entry .bl-text { color: #ddd4db; }
+  #slots { justify-content: flex-start; padding-top: 44px; }
+  #slots h1 { font-size: 22px; margin-bottom: 18px; }
+  #slot-list { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  .slot-btn {
+    text-align: left; padding: 14px 18px; font-size: 14px; line-height: 1.5;
+    border: 1px solid rgba(255,255,255,.18); border-radius: 12px;
+    background: rgba(255,255,255,.06); color: #f0e8ee; cursor: pointer; font-family: inherit;
+  }
+  .slot-btn:hover { border-color: var(--accent); background: rgba(214,74,122,.15); }
+  .slot-btn .snum { display: block; font-weight: 700; color: #e8b8cd; margin-bottom: 2px; }
+  .slot-btn .sprev { display: block; color: #b8a9b2; font-size: 13px; }
+  .sparkle {
+    position: absolute; color: #ffd9e6; font-size: 15px; pointer-events: none;
+    animation: twinkle 2.4s ease-in-out infinite;
+    text-shadow: 0 0 8px rgba(255,190,215,.8);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: .15; transform: scale(.7) rotate(0deg); }
+    50% { opacity: .95; transform: scale(1.25) rotate(20deg); }
+  }
+  #settle {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(244,143,177,.32);
+    border-radius: 14px; padding: 16px 22px; margin: 6px auto 20px; max-width: 360px;
+    text-align: left;
+  }
+  .s-row { font-size: 14px; color: #e6d5de; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .s-row b { color: #fff; margin-left: auto; font-size: 15px; }
+  .s-comment { margin-top: 10px; font-size: 14px; color: #f4a8c4; line-height: 1.7; }
+  .end-btns { display: flex; gap: 12px; }
+  .overlay button.ghost {
+    background: transparent; border: 1px solid rgba(244,143,177,.4);
+    color: #ffd9e6; box-shadow: none; letter-spacing: 2px;
+  }
+  .overlay button.ghost:hover { background: rgba(232,82,138,.18); box-shadow: 0 0 12px rgba(244,143,177,.3); }
+  #gallery { justify-content: flex-start; padding-top: 44px; }
+  #gallery h1 { font-size: 22px; margin-bottom: 18px; }
+  #gallery-list { width: 100%; max-width: 580px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-bottom: 18px; }
+  .cg-cell {
+    width: 172px; height: 100px; border-radius: 10px; overflow: hidden;
+    border: 1px solid rgba(244,143,177,.35); cursor: pointer; position: relative;
+    background: #24141e;
+  }
+  .cg-cell img { width: 100%; height: 100%; object-fit: cover; }
+  .cg-cell .lock {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #6e5f6a; font-size: 26px; background: rgba(20,12,18,.45);
+  }
+  .cg-cell .cname { position: absolute; bottom: 0; left: 0; right: 0; font-size: 11px; color: #fff; background: rgba(0,0,0,.55); padding: 2px 6px; text-align: center; }
+  @media (max-width: 560px) {
+    body { padding: 0; }
+    #app { width: 100vw; height: 100vh; height: 100dvh; max-height: none; border-radius: 0; border: none; }
+    header { padding: 10px 12px; }
+    header .title { font-size: 13px; letter-spacing: 1px; }
+    .head-right { gap: 5px; }
+    header .scene { padding: 2px 9px; font-size: 11px; }
+    #btn-log, #btn-save, #btn-load, #btn-audio { padding: 2px 8px; font-size: 11px; }
+    #hud { gap: 7px; padding: 7px 12px; font-size: 11px; }
+    #hud .chip { padding: 2px 8px; }
+    #title h1 { font-size: 28px; letter-spacing: 3px; }
+    header .title, #title h1 { background: none !important; -webkit-text-fill-color: #ffd9e6 !important; color: #ffd9e6 !important; }
+    .overlay .sub { font-size: 16px; }
+    .overlay .tagline { font-size: 13px; }
+    #dialog-text { font-size: 16px; }
+    #name-tag { font-size: 15px; }
+    #portrait { bottom: 88px; height: 62%; }
+    #settle { max-width: 92%; }
+    #gallery-list { max-width: 92%; }
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <span class="title">松阪小姐今天相亲成功了吗？</span>
+      <span class="head-right">
+        <span class="scene" id="scene">—</span>
+        <button id="btn-save">存档</button>
+        <button id="btn-load">读档</button>
+        <button id="btn-log">记录</button>
+        <button id="btn-audio">音</button>
+      </span>
+    </header>
+    <div id="hud">
+      <span class="chip"><span class="hh rose">♥</span>松田阵平 <b id="v-matsu">0</b></span>
+      <span class="chip"><span class="hh lav">♥</span>研二 <b id="v-hagiwara">0</b></span>
+      <span class="chip"><span class="hh gold">✦</span>面子 <b id="v-mianzi">0</b></span>
+      <span class="chip"><span class="hh outline">♡</span>真心 <b id="v-zhenxin">0</b></span>
+    </div>
+    <div id="stage">
+      <div id="bg-layer"></div>
+      <div id="portrait" class="hidden"></div>
+      <div id="dialog" class="hidden">
+        <div id="name-tag">—</div>
+        <div id="dialog-text"></div>
+        <div id="hint">点击继续</div>
+      </div>
+      <div id="choices" class="hidden"></div>
+      <div id="toast"></div>
+      <div id="flash"></div>
+      <div id="sleep" class="hidden"><span>Zzzz…</span></div>
+      <div id="cg" class="hidden"><img id="cg-img" src="" alt=""><div id="cg-hint">点击继续</div></div>
+
+      <div class="overlay" id="title">
+        <span class="sparkle" style="top:15%;left:13%;">✦</span>
+        <span class="sparkle" style="top:23%;right:15%;animation-delay:.6s;">✦</span>
+        <span class="sparkle" style="top:52%;left:9%;animation-delay:1.2s;">❀</span>
+        <span class="sparkle" style="bottom:27%;right:11%;animation-delay:.9s;">✦</span>
+        <span class="sparkle" style="bottom:17%;left:19%;animation-delay:1.6s;">♡</span>
+        <h1>松阪小姐今天相亲成功了吗？</h1>
+        <div class="sub">Chapter 1 · 相亲对象，当场死亡</div>
+        <div class="tagline">今天，我松阪梅的第 379 次相亲，又搞砸了。</div>
+        <div class="meta">恋爱选择 / 视觉小说 · 第三人称 · 约 30 分钟</div>
+        <button id="btn-start">开 始 游 戏</button>
+        <button id="btn-gallery-title" class="ghost" style="margin-top:14px;">CG 画廊</button>
+      </div>
+
+      <div class="overlay hidden" id="ending">
+        <h1>Chapter 1 完</h1>
+        <div class="endbox">
+          她并不知道，<br>新的邂逅——和新的案子，<br>正在前头等着她。
+        </div>
+        <div id="settle">
+          <div class="s-row"><span class="hh rose">♥</span> 松田阵平好感度 <b id="s-matsu">0</b></div>
+          <div class="s-row"><span class="hh lav">♥</span> 研二好感度 <b id="s-hagiwara">0</b></div>
+          <div class="s-row"><span class="hh gold">✦</span> 面子 <b id="s-mianzi">0</b></div>
+          <div class="s-row"><span class="hh outline">♡</span> 真心 <b id="s-zhenxin">0</b></div>
+          <div class="s-comment" id="s-comment"></div>
+        </div>
+        <div class="end-btns">
+          <button id="btn-restart">重 新 开 始</button>
+          <button id="btn-gallery-end" class="ghost">CG 画廊</button>
+        </div>
+      </div>
+
+      <div class="overlay hidden" id="backlog">
+        <h1>对话记录</h1>
+        <div id="backlog-list"></div>
+        <button id="btn-log-close">关 闭</button>
+      </div>
+
+      <div class="overlay hidden" id="slots">
+        <h1 id="slots-title">存档</h1>
+        <div id="slot-list"></div>
+        <button id="btn-slot-close">关 闭</button>
+      </div>
+
+      <div class="overlay hidden" id="gallery">
+        <h1>CG 画廊</h1>
+        <div id="gallery-list"></div>
+        <button id="btn-gallery-close">关 闭</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const SCENES = {
+  cafe: "咖啡厅（凶案现场）",
+  bar: "居酒屋",
+  bar_goddess: "居酒屋",
+  goddess: "神殿",
+  home: "松阪梅的公寓",
+  explosion: "公寓·爆炸",
+  explosion_after: "公寓·爆炸后",
+  park_empty: "米花中央公园",
+  park: "米花中央公园",
+  street: "街头",
+  matsu: "松田阵平的公寓",
+  police: "警视厅"
+};
+
+const BG = {
+  cafe: "linear-gradient(160deg, #f6e6d2, #e3c3a0)",
+  bar: "linear-gradient(160deg, #2a1911, #4a2a17)",
+  bar_goddess: "linear-gradient(160deg, #3a2a1a, #5a4020)",
+  goddess: "linear-gradient(160deg, #f5f0e8, #e8dcc8)",
+  home: "linear-gradient(160deg, #f8dde6, #e7c7d2)",
+  explosion: "linear-gradient(160deg, #3a1a0e, #6a2a0a)",
+  explosion_after: "linear-gradient(160deg, #2a1a14, #4a2a1a)",
+  park_empty: "linear-gradient(160deg, #cfe4c4, #a4c59a)",
+  park: "linear-gradient(160deg, #cfe4c4, #a4c59a)",
+  street: "linear-gradient(160deg, #1b2330, #0d141f)",
+  matsu: "linear-gradient(160deg, #2e3d4e, #1e2938)",
+  police: "linear-gradient(160deg, #cdd8df, #a8bcc8)"
+};
+
+const BG_FILE = {
+  cafe: "bg_cafe.png",
+  bar: "bg_bar.png",
+  bar_goddess: "bg_bar_goddess.png",
+  goddess: "bg_goddess_palace.png",
+  home: "bg_home.png",
+  explosion: "bg_explosion.png",
+  explosion_after: "bg_explosion_after.png",
+  park_empty: "bg_park_empty.png",
+  park: "bg_park.png",
+  street: "bg_street.png",
+  matsu: "bg_matsu.png",
+  police: "bg_police.png"
+};
+
+const COLORS = {
+  "松阪梅": "#58c98e",
+  "松田阵平": "#7aa7e0",
+  "萩原研二": "#b68ae0",
+  "系统": "#ff7db0",
+  "女神艾芙莉娜": "#e8b34a",
+  "工藤新一": "#5aa6ec",
+  "凶手女士": "#e06055",
+  "警官们": "#aab2bb",
+  "女孩": "#aab2bb",
+  "神秘女声": "#aab2bb",
+  "伊达航": "#f0954a",
+  "高木涉": "#9fb0c0",
+  "白鸟任三郎": "#4fd0c8"
+};
+
+const CHAR_DEFAULT_EXPR = {
+  "松阪梅": "自信微笑",
+  "松田阵平": "冷峻毒舌",
+  "萩原研二": "笑眯眯",
+  "女神艾芙莉娜": "高贵傲慢",
+  "工藤新一": "自信微笑",
+  "伊达航": "爽朗笑容",
+  "高木涉": "温和",
+  "白鸟任三郎": "绅士微笑",
+  "凶手女士": "阴狠"
+};
+
+const NO_PORTRAIT = { "警官们": true, "女孩": true, "神秘女声": true };
+
+const PORTRAITS = {
+  "松阪梅": { hair: "#2f7d52", skin: "#f6d9c0", cloth: "#4a3f52" },
+  "松田阵平": { hair: "#2b2b33", skin: "#f2d5bf", cloth: "#2f3d52" },
+  "萩原研二": { hair: "#3a2b3a", skin: "#f2d5bf", cloth: "#4a3a6a" },
+  "工藤新一": { hair: "#5a3d2b", skin: "#f6d9c0", cloth: "#2b4f7a" },
+  "伊达航": { hair: "#2b2b2b", skin: "#e8c8a8", cloth: "#7a4a24" },
+  "高木涉": { hair: "#4a3d2b", skin: "#f2d5bf", cloth: "#5a6b7a" },
+  "白鸟任三郎": { hair: "#7a5a3a", skin: "#f2d5bf", cloth: "#2f5f5f" },
+  "凶手女士": { hair: "#3a2b3a", skin: "#f2d5bf", cloth: "#8a2b2b" },
+  "神秘女声": { hair: "#2b2b33", skin: "#f2d5bf", cloth: "#4a4a5a" }
+};
+
+function portraitSVG(name) {
+  const p = PORTRAITS[name];
+  if (!p) return "";
+  return '<svg viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg">'
+    + '<path d="M40 600 L40 350 Q40 285 150 285 Q260 285 260 350 L260 600 Z" fill="' + p.cloth + '"/>'
+    + '<rect x="130" y="225" width="40" height="65" fill="' + p.skin + '"/>'
+    + '<circle cx="150" cy="175" r="72" fill="' + p.skin + '"/>'
+    + '<path d="M78 175 C78 98 108 78 150 78 C192 78 222 98 222 175 L222 145 C210 108 185 90 150 90 C115 90 90 108 78 145 Z" fill="' + p.hair + '"/>'
+    + '</svg>';
+}
+
+function portraitPath(name, expr) {
+  if (name === "系统") {
+    const v = expr || "phone";
+    return "images/system_" + v + ".png";
+  }
+  let char = name;
+  if (name === "神秘女声") char = "女神艾芙莉娜";
+  const e = expr || CHAR_DEFAULT_EXPR[char];
+  if (!e) return null;
+  return "images/" + char + "_" + e + ".png";
+}
+
+const story = [
+  { scene: "cafe" },
+  { t: "n", x: "咖啡店里，松阪梅看着地上的白色人形标线出神。她的脑子仍无法运转——一个人，她的相亲对象，就死在了这里。" },
+  { t: "n", x: "半小时前，那个男人还在夸夸其谈。她本想着“又是个自大狂，准备起身告辞”，对方却突然捂着胸口，吐血倒下了。" },
+  { t: "os", x: "我怎么又碰上这种事……" },
+  { t: "d", n: "工藤新一", e: "严肃认真", x: "所以凶手就是你！" },
+  { t: "n", x: "松阪梅顺着少年手指的方向看去——是她斜后方那个一脸平淡的女人。" },
+  { t: "d", n: "凶手女士", x: "都是这个贱女人勾引我的一郎！从来没有女人能让一郎跟我提分手！" },
+  { t: "n", p: "凶手女士", e: "狰狞举刀", x: "白光一闪，那女人从怀里掏出小刀，冲破警察的阻拦，直直捅向松阪梅！" },
+  { t: "os", x: "我，松阪梅，双叶幼稚园的美女老师，难道就要香消玉殒了吗？" },
+  { t: "n", x: "一股力道自手臂传来，她被人猛地往后一拉，跌进一个结实的胸膛。来人单手护住她，一脚踹飞了凶器。" },
+  { t: "os", e: "害羞脸红", x: "好、好帅。" },
+  { t: "cg", img: "cg_01_英雄救美.png" },
+  { t: "bgm", v: "daily" },
+  { t: "n", x: "确认凶手被压制，男人上下扫视她，确认没受伤才松开手，转头训斥警员。" },
+  { t: "d", n: "松田阵平", x: "你们怎么回事？一个女人都控制不住！确定嫌疑人就要时刻保持警惕！" },
+  { t: "d", n: "警官们", x: "是！非常抱歉，松田警官！" },
+  { t: "d", n: "松田阵平", x: "跟我说干什么？给这位女士道歉。" },
+  { t: "n", x: "警官们冲松阪梅鞠躬。松阪梅却还直愣愣地盯着松田阵平——隔着墨镜，她仿佛已经看到了和他相亲相爱、步入婚姻殿堂的场景。" },
+  { t: "d", n: "松田阵平", x: "女士？松阪女士？" },
+  { t: "d", n: "松阪梅", e: "害羞脸红", x: "啊？啊！是的，你好，我是松阪梅。" },
+  { t: "d", n: "松田阵平", x: "松阪女士，请你注意一下。虽然这么说不合适，但如果你一直这样，也难怪会吸引一些不太合适的男性。" },
+  { t: "n", x: "男人摘下了墨镜。好帅。但这句刺耳的话，比他的脸更让松阪梅在意。" },
+  { t: "os", e: "生气抱胸", x: "什么叫“我一直这样”？！我这样的绝世大美女，男性质量不好，跟我有什么关系！" },
+
+  { t: "c", q: "面对松田阵平的这番话，松阪梅会——", opts: [
+    { a: "嘴硬反驳：“渣男主动搭讪关我什么事！”", e: { mianzi: 2 }, r: [
+      { t: "d", n: "松阪梅", x: "那样的渣男明明是他主动搭讪、还骗我说单身，这关我什么事？怎么，我还要找私家侦探去给他做背调吗？少把别人的过错盖在我头上。" },
+      { t: "d", n: "松田阵平", x: "……你不是看脸行事吗？" },
+      { t: "d", n: "松阪梅", e: "傲娇大笑", x: "谁说的？我松阪梅的目标，是跟一个超级金龟婿结婚！" },
+      { t: "n", x: "松阪梅以手掩唇，放声笑了起来：“哦吼吼吼——”周围人看着这样的她，纷纷豆豆眼。" }
+    ]},
+    { a: "忍气吞声，维持淑女形象", e: { mianzi: -1 }, r: [
+      { t: "d", n: "松阪梅", x: "……谢谢警官提醒。" },
+      { t: "n", x: "松阪梅把一肚子火咽了回去，指甲几乎掐进手心。她决定不在这么多人面前丢脸。" }
+    ]},
+    { a: "心里狂吐槽，表面装没听懂", e: { matsu: 1, mianzi: 1 }, r: [
+      { t: "d", n: "松阪梅", x: "警官在说什么？我不太明白呢。" },
+      { t: "n", x: "松田阵平顿了一下，墨镜下的眼睛动了动，没再说下去。她越是装傻，他反而越在意。" }
+    ]}
+  ]},
+
+  { t: "n", x: "松阪梅假装硬气，抬手拨了拨那头柔顺的墨绿长发。" },
+  { t: "d", n: "松阪梅", x: "既然这样，那我就先走了。" },
+  { t: "d", n: "松田阵平", x: "等等，松阪小姐。" },
+  { t: "os", x: "他叫住我，是不是想道歉？" },
+  { t: "d", n: "松阪梅", x: "怎么了？这位警官？" },
+  { t: "d", n: "松田阵平", x: "你还要做笔录。" },
+  { t: "os", e: "生气抱胸", x: "……又自作多情了！" },
+  { t: "d", n: "松阪梅", e: "生气抱胸", x: "我知道！现在就做笔录！" },
+  { t: "n", x: "扑哧——有人偷笑。这绝对是松阪梅有史以来最倒霉的一天。没有之一。" },
+
+  { scene: "bar" },
+  { t: "n", x: "深夜，居酒屋。昏黄的灯光下，松阪梅趴在台面上，猛灌一口超大杯冰啤酒。" },
+  { t: "d", n: "松阪梅", e: "醉醺醺", x: "金龟婿你在哪里啊……今天，嗝，那个警官太气人了！" },
+  { t: "n", x: "耳边突然传来一道微弱的女声。" },
+  { t: "d", n: "神秘女声", x: "你还哭？我的 KPI 都快被你拉得垫底了。" },
+  { scene: "bar_goddess" },
+  { t: "n", x: "眼前炸开一团刺眼的黄光。" },
+  { t: "flash" },
+  { scene: "goddess" },
+  { t: "n", x: "恢复视野时，世界已是一片纯白。一个用丝带缠着双眼的女人悬浮在半空，发丝衣摆无风自动。" },
+  { t: "d", n: "女神艾芙莉娜", x: "对我尊敬些，人类！我是伟大的婚姻女神——艾芙莉娜。" },
+  { t: "d", n: "松阪梅", e: "醉醺醺", x: "……女神也要考核呀？" },
+  { t: "n", x: "女神一噎，周身光芒猛地闪了一下。" },
+  { t: "d", n: "女神艾芙莉娜", e: "烦躁", x: "别废话。我给你绑定一个辅助系统，里面是我安排的助手。系统会发布帮你恋爱结婚的任务……算了，还是先帮你顺利恋爱吧。" },
+  { t: "n", x: "稍一停顿，女神强调道：" },
+  { t: "d", n: "女神艾芙莉娜", e: "烦躁", x: "别再拉低我的 KPI！" },
+
+  { t: "c", p: "松阪梅", e: "醉醺醺", q: "面对“绑定系统”这件事，松阪梅的态度是——", opts: [
+    { a: "满心期待：“这么说，金龟婿有戏了！”", e: { zhenxin: 1 }, r: [
+      { t: "d", n: "松阪梅", e: "醉醺醺", x: "这么说，我的金龟婿有戏了！" },
+      { t: "n", x: "女神满意地抬了抬下巴。" }
+    ]},
+    { a: "半信半疑：“这系统……靠谱吗？”", e: {}, r: [
+      { t: "d", n: "松阪梅", e: "醉醺醺", x: "这系统……真的靠谱吗？" },
+      { t: "n", x: "女神懒得多解释，只轻哼了一声。" }
+    ]},
+    { a: "嫌弃：“这粉色会不会亮到晃眼？”", e: { mianzi: 1 }, r: [
+      { t: "d", n: "松阪梅", e: "醉醺醺", x: "你们的系统，不会是什么亮到晃眼的粉色界面吧？" },
+      { t: "n", x: "女神神色微妙地顿了一下，没有回答。" }
+    ]}
+  ]},
+
+  { t: "n", x: "女神不耐烦地打响指。松阪梅眼前又是一白。" },
+  { t: "sleep" },
+  { scene: "home" },
+  { t: "n", x: "再睁眼，是她自己乱糟糟的公寓。天已大亮，手机屏幕亮起粉色的星星动画——两个光屁股小孩举着小弓箭飞来飞去。" },
+  { t: "d", n: "系统", x: "欢迎宿主。" },
+  { t: "d", n: "松阪梅", x: "……手机中病毒了？" },
+  { t: "n", x: "动画结束，她找不到关闭按钮，只能认命按下“下一步”。一个二头身小娃娃从屏幕边框蹦了出来。" },
+  { t: "d", n: "萩原研二", x: "你好，宿主，我是你的助手精灵，萩原研二。" },
+  { t: "n", x: "黑色半长发，紫罗兰色的眼睛，穿着精致执事服——虽然，是可爱的二头身。" },
+  { t: "os", x: "还挺可爱的。" },
+  { t: "d", n: "萩原研二", e: "俏皮wink", x: "系统会发布任务，完成任务能得积分、解锁商城。而作为助手精灵……像您这样的大美女居然没谈过恋爱，真是男性的遗憾啊。" },
+  { t: "d", n: "松阪梅", x: "这小家伙，还挺会说话。" },
+  { t: "n", x: "闹钟响了。她今天要替吉永老师代班，去娃娃车接孩子。" },
+
+  { t: "n", x: "下班后，手机弹出系统任务。" },
+  { t: "d", n: "系统", x: "叮咚，热身任务：请在晚上六点前赶到米花中央公园。说不定那里有一位黄色头发的白马王子在等你哦。" },
+  { t: "os", e: "傲娇大笑", x: "白马王子！今天周三，幼稚园只上半天课，来得及！" },
+  { t: "n", p: "松阪梅", e: "换装_傲娇大笑", x: "松阪梅精心打扮：系上米色丝巾，涂好口红，提着心爱的包包出门赴约。" },
+  { t: "n", x: "走离公寓没多远，身后突然——“轰——！”" },
+  { scene: "explosion" },
+  { t: "se", v: "explosion" },
+  { t: "n", x: "火光与热浪席卷而来，她被气流掀翻在地。粗粝的地面磨破了膝盖。回头望去，她的公寓已陷入火海。" },
+  { t: "cg", img: "cg_04_公寓爆炸.png" },
+  { t: "d", n: "松阪梅", e: "换装_大哭", x: "我的……香奈儿套装、Fendi 包、Dior……我还没还完分期的奢侈品……" },
+
+  { t: "c", p: "松阪梅", e: "换装_忧伤", q: "看着燃烧的公寓，松阪梅的第一反应是——", opts: [
+    { a: "先哭奢侈品损失", e: { zhenxin: -1 }, r: [
+      { t: "d", n: "松阪梅", e: "换装_大哭", x: "我辛辛苦苦攒下的家当啊……" },
+      { t: "n", x: "她从不觉得自己记性这么好，此刻却能一样样数清房间里有多少限量款。" }
+    ]},
+    { a: "先确认安全，冷静处理", e: { zhenxin: 2 }, r: [
+      { t: "n", x: "松阪梅强压住慌乱，抹了把脸，确认自己没有大碍，摸出手机准备报警。" }
+    ]},
+    { a: "呆坐在地，一时无法思考", e: {}, r: [
+      { t: "n", x: "松阪梅跌坐在地上，大脑一片空白，久久回不过神。" }
+    ]}
+  ]},
+
+  { scene: "explosion_after" },
+  { t: "n", x: "警车与消防车的警报声由远及近。一件宽大的外套从她头顶罩下来，遮住视线。" },
+  { t: "n", x: "一双熟悉的手臂连人带衣服圈住了她，浓烈的安全感袭来。松阪梅干脆把脸埋进那件黑衬衫，任由眼泪打湿衣襟。" },
+  { t: "d", n: "松田阵平", e: "冷峻毒舌", x: "怎么才一天没见，就又遇到了危险。" },
+  { t: "n", x: "男人隔着衣服轻轻拍她的头。过了好一会儿，松阪梅才拉下外套，露出那张熟悉的帅脸。" },
+  { t: "d", n: "松田阵平", x: "……你工作日还打扮成这样？" },
+  { t: "n", x: "松阪梅一时沉默，不好解释。" },
+  { t: "d", n: "松田阵平", x: "所以昨天的相亲对象刚过世，今天你就要另寻新欢吗？松阪女士，你还真是“坚韧”。" },
+  { t: "os", e: "换装_生气抱胸", x: "不能陷入自证陷阱！" },
+  { t: "d", n: "松阪梅", e: "换装_生气抱胸", x: "这好像不关松田警官的事吧。我跟昨天那位先生没有任何关系，昨天也是他第一次约我出去。" },
+
+  { scene: "park_empty" },
+  { t: "n", x: "天色将暗，松阪梅赶到米花中央公园，四处寻找黄色头发的人。" },
+  { t: "d", n: "系统", e: "target", x: "叮咚，恭喜宿主成功遇到任务对象。" },
+  { scene: "park" },
+  { t: "n", x: "一个黄发青年站在眼前。下一秒，“啪！”——对面女孩一巴掌甩在他脸上。" },
+  { t: "d", n: "女孩", x: "你怎么敢出轨我的闺蜜！你个渣男！" },
+  { t: "d", n: "松阪梅", e: "换装_忧伤", x: "这就是系统给我推荐的对象……我还能有金龟婿吗？" },
+  { t: "n", x: "她去便利店买了罐啤酒，翻看系统奖励——是两个电话号码。第一个怎么也打不通，第二个……接通了。" },
+  { t: "d", n: "松田阵平", x: "松阪小姐？你怎么了？是身体不舒服吗？" },
+  { t: "os", e: "换装_生气抱胸", x: "怎么又是这个松田警官？！" },
+  { t: "n", x: "松阪梅羞愤地挂断电话。身无分文，连今晚住哪都成了问题。" },
+
+  { scene: "street" },
+  { t: "n", x: "路边停着一辆警车。清瘦的警官走开了，高大警官在路中央捡被风吹跑的本子。刺目的远光灯划破黑夜——一辆大卡车正快速冲向他！" },
+  { t: "d", n: "松阪梅", e: "换装_着急", x: "小心！" },
+
+  { t: "c", p: "松阪梅", e: "换装_着急", q: "卡车冲向警官，松阪梅会——", opts: [
+    { a: "本能扑上去，把人撞开", e: { matsu: 3, zhenxin: 2 }, r: [
+      { t: "n", x: "松阪梅甩开手里的东西，赤脚冲出去，扑到警官身前，借着惯性把他一起带向路边。卡车“嘭”地撞上了警车。" }
+    ]},
+    { a: "大声示警，同时观察四周", e: { matsu: 1, zhenxin: 1 }, r: [
+      { t: "n", x: "松阪梅用尽力气大喊示警。警官抬头看见来车，就地翻滚避开，卡车擦身而过，撞上了警车。" }
+    ]}
+  ]},
+
+  { t: "d", n: "伊达航", x: "小姐没事吧？刚才真是谢谢你。我是伊达航。" },
+  { t: "d", n: "高木涉", e: "紧张", x: "非、非常感谢您救了伊达前辈！我是高木涉！" },
+  { t: "d", n: "松阪梅", e: "换装_自信微笑", x: "请不用客气，能帮到警官是我的荣幸。敝姓松阪，24 岁，未婚。" },
+  { t: "n", x: "一辆黑色马自达 RX-7 几乎横漂着甩停在她面前。松田阵平下车，摘下嘴里没点的烟。" },
+  { t: "d", n: "松田阵平", e: "冷峻_摘墨镜", x: "怎么才几个小时，就把自己弄得这么惨？" },
+  { t: "os", e: "换装_害羞脸红", x: "太、太犯规了！" },
+  { t: "d", n: "伊达航", x: "松田，我记得你公寓就在附近？让一位救了警察的女士露宿街头，可不是我们的风格。别看这家伙脸臭，其实是个超级可靠的警察。" },
+  { t: "d", n: "松田阵平", x: "……走吧。" },
+
+  { scene: "matsu" },
+  { t: "n", x: "松田阵平开车带她回家，中途去便利店买了拖鞋和洗漱用品。" },
+  { t: "d", n: "松田阵平", e: "认真专注", x: "我家拖鞋不适合你的尺码。今天你也累了，直接穿这双吧。" },
+  { t: "os", e: "换装_害羞脸红", x: "这个人……比他的嘴温柔多了。" },
+  { t: "n", x: "在松田家，他替她处理膝盖的伤口，动作熟练又轻柔。灯光下，松阪梅看着男人低垂的眉眼，心中悸动。" },
+  { t: "cg", img: "cg_07_灯下包扎.png" },
+  { t: "os", e: "换装_害羞脸红", x: "系统，我能不能追求这位……" },
+  { t: "d", n: "系统", x: "叮咚，不可以，宿主。" },
+  { t: "os", e: "换装_生气抱胸", x: "为什么！他比你推荐的那个黄毛好多了！" },
+  { t: "d", n: "系统", x: "叮咚，根据女神的数据，松田阵平与你的命盘不搭配。" },
+  { t: "os", e: "换装_生气抱胸", x: "那我要是不做任务，就想追他呢？" },
+  { t: "d", n: "系统", x: "叮咚，你的运气实在太差。目标人物“松田阵平”已被自动加入宿主“求生避险”黑名单——你们双倍事故体质，叠加有生命危险。" },
+  { t: "os", e: "换装_忧伤", x: "……为了小命，还是算了。" },
+  { t: "n", x: "第二天一早，保险业务员学妹的电话就打了过来——理赔金三百万日元。可对方紧接着补了一句：“按顺序来，得等一个月左右。”" },
+  { t: "os", e: "换装_着急", x: "一个月……这段时间的住处、生活费，可怎么办？" },
+  { t: "n", x: "松阪梅捏着手机，脸色垮了下来。一旁，松田阵平已经穿戴整齐，瞥了眼她的神情，大概猜到了什么。" },
+  { t: "d", n: "松田阵平", e: "傲娇脸红", x: "松阪小姐可以放心住在这里，不用在意时间。" },
+  { t: "n", x: "不等她开口，男人已经自顾自地安排起来：" },
+  { t: "d", n: "松田阵平", e: "傲娇脸红", x: "公寓爆炸算意外，政府有临时住房补助，三天内能到账十二万日元。一会你跟我去警局，把笔录和申请材料一起办了，钱能下来得快一点。" },
+  { t: "os", e: "换装_害羞脸红", x: "这个人……连这种细节都替我想到了。" },
+  { t: "d", n: "松阪梅", e: "换装_害羞脸红", x: "好……谢谢你，松田先生。" },
+
+  { scene: "police" },
+  { t: "n", x: "警视厅。松阪梅跟着松田阵平走进大楼。她要补的是这几天的笔录，顺便把补助材料一起办了。一个俊朗的羊毛卷男人迎了上来。" },
+  { t: "d", n: "白鸟任三郎", x: "松阪小姐你好，我是白鸟任三郎。很抱歉听到这个消息，我先带你做个笔录吧。" },
+  { t: "d", n: "系统", e: "target", x: "叮咚，恭喜宿主遇到第一位适龄男青年。系列任务一完成 1/5。" },
+  { t: "n", x: "随后佐藤美和子、高木涉也赶来道谢。寒暄过后，佐藤带高木离开——松阪梅却看到，白鸟警官痴痴地望着佐藤的背影。" },
+  { t: "os", e: "换装_生气抱胸", x: "系统你不靠谱！白鸟警官明显心有所属啊！" },
+  { t: "n", x: "办完手续，松田阵平从钱包里抽出一张钞票，顿了顿，干脆把整个钱包塞进她手里。" },
+  { t: "d", n: "松田阵平", e: "傲娇脸红", x: "别多想，你先拿着应急。保险赔偿到了要还我。一会我还有工作，你先回去休息。有事就给我打电话。" },
+
+  { t: "c", p: "松阪梅", e: "换装_自信微笑", q: "松田把整个钱包塞过来，松阪梅会——", opts: [
+    { a: "收下，认真道谢", e: { matsu: 2 }, r: [
+      { t: "d", n: "松阪梅", e: "换装_自信微笑", x: "谢谢你，松田先生。等我赔偿到了，一定连本带利还你。" },
+      { t: "n", x: "松田阵平神色一松，轻轻“嗯”了一声。" }
+    ]},
+    { a: "傲娇拒绝", e: { mianzi: 2, matsu: 1 }, r: [
+      { t: "d", n: "松阪梅", e: "换装_生气抱胸", x: "不用，我自己能想办法。" },
+      { t: "n", x: "松田阵平皱眉，把钱包又塞回她手里：“逞什么强。”她最终也没能推回去。" }
+    ]},
+    { a: "犹豫后收下，强调“是借的”", e: { mianzi: 1, matsu: 1 }, r: [
+      { t: "d", n: "松阪梅", e: "换装_害羞脸红", x: "那……这算我借你的，记在账上。" },
+      { t: "n", x: "松田阵平嘴角微勾：“随便你。”" }
+    ]}
+  ]},
+
+  { t: "n", x: "离开警局，松阪梅握紧拳头。" },
+  { t: "os", e: "换装_自信微笑", x: "坐以待毙不是我的风格。明天，去找兼职！" },
+  { t: "n", x: "她插上耳机，和手机里的小助手闲聊。" },
+  { t: "d", n: "萩原研二", e: "温柔", x: "商业街有点远，松阪小姐可以先去看看五丁目那边。" },
+  { t: "d", n: "松阪梅", e: "换装_自信微笑", x: "好，就听你的。" },
+  { t: "n", x: "松阪梅并不知道——新的邂逅，和新的案子，正在前头等着她。" },
+  { t: "d", n: "系统", e: "bell", x: "叮咚，系列任务一进行中：偶遇 5 位适龄男青年（1/5）。请宿主再接再厉。" },
+  { t: "end" }
+];
+
+const state = { matsu: 0, hagiwara: 0, mianzi: 0, zhenxin: 0 };
+let cursor = 0;
+let pending = [];
+let typing = false;
+let typeTimer = null;
+let currentSpan = null;
+let currentFull = "";
+let lastPortrait = null;
+let flashing = false;
+let sleeping = false;
+let cgOpen = false;
+let cgFromGallery = false;
+let history = [];
+let currentSceneKey = null;
+
+const stage = document.getElementById("stage");
+const bgLayer = document.getElementById("bg-layer");
+const portraitEl = document.getElementById("portrait");
+const dialogEl = document.getElementById("dialog");
+const nameTag = document.getElementById("name-tag");
+const textEl = document.getElementById("dialog-text");
+const sceneEl = document.getElementById("scene");
+const choicesEl = document.getElementById("choices");
+const toastEl = document.getElementById("toast");
+const flashEl = document.getElementById("flash");
+const sleepEl = document.getElementById("sleep");
+const cgEl = document.getElementById("cg");
+const cgImg = document.getElementById("cg-img");
+const btnAudio = document.getElementById("btn-audio");
+const titleEl = document.getElementById("title");
+const endingEl = document.getElementById("ending");
+const backlogEl = document.getElementById("backlog");
+const backlogList = document.getElementById("backlog-list");
+const slotsEl = document.getElementById("slots");
+const slotsTitle = document.getElementById("slots-title");
+const slotList = document.getElementById("slot-list");
+const galleryEl = document.getElementById("gallery");
+const galleryList = document.getElementById("gallery-list");
+
+const hud = {
+  "matsu": document.getElementById("v-matsu"),
+  "hagiwara": document.getElementById("v-hagiwara"),
+  "mianzi": document.getElementById("v-mianzi"),
+  "zhenxin": document.getElementById("v-zhenxin")
+};
+
+const BGM_TRACKS = { daily: "bgm_daily", suspense: "bgm_suspense", sad: "bgm_sad", warm: "bgm_warm", holy: "bgm_holy" };
+const BGM_VOLUME = { daily: 0.15, suspense: 1.0, sad: 0.5, warm: 0.5, holy: 0.5 };
+const SCENE_BGM = {
+  cafe: "suspense", bar: "sad", bar_goddess: "holy", goddess: "holy", home: "daily",
+  explosion: "suspense", explosion_after: "sad", park_empty: "daily", park: "daily",
+  street: "suspense", matsu: "warm", police: "warm"
+};
+const bgmEl = new Audio();
+const seCache = [];
+let currentBgm = null;
+let currentBgmVol = 0.55;
+let audioEnabled = true;
+
+function fadeOut(audio, duration, callback) {
+  const startVol = audio.volume;
+  const start = performance.now();
+  const step = () => {
+    const t = (performance.now() - start) / duration;
+    if (t >= 1) {
+      audio.pause();
+      if (callback) callback();
+      return;
+    }
+    audio.volume = startVol * (1 - t);
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function fadeIn(audio, targetVol, duration) {
+  audio.volume = 0;
+  const start = performance.now();
+  const step = () => {
+    const t = (performance.now() - start) / duration;
+    if (t >= 1) { audio.volume = targetVol; return; }
+    audio.volume = targetVol * t;
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function playBgm(track) {
+  const name = BGM_TRACKS[track];
+  if (!name || name === currentBgm) return;
+  currentBgm = name;
+  currentBgmVol = (BGM_VOLUME[track] !== undefined) ? BGM_VOLUME[track] : 0.55;
+  if (!audioEnabled) return;
+  const startNew = () => {
+    bgmEl.src = "audio/" + name + ".mp3";
+    bgmEl.loop = true;
+    bgmEl.play().catch(() => {});
+    fadeIn(bgmEl, currentBgmVol, 3000);
+  };
+  if (bgmEl.src && !bgmEl.paused) {
+    fadeOut(bgmEl, 500, startNew);
+  } else {
+    startNew();
+  }
+}
+
+function playSe(name) {
+  if (!audioEnabled) return;
+  const a = new Audio("audio/" + name + ".mp3");
+  a.volume = 0.9;
+  a.play().catch(() => {});
+  seCache.push(a);
+  a.onended = () => {
+    const i = seCache.indexOf(a);
+    if (i >= 0) seCache.splice(i, 1);
+  };
+  if (seCache.length > 12) seCache.shift();
+}
+
+function toggleAudio() {
+  audioEnabled = !audioEnabled;
+  btnAudio.textContent = audioEnabled ? "音" : "静音";
+  if (audioEnabled) {
+    if (currentBgm) {
+      bgmEl.src = "audio/" + currentBgm + ".mp3";
+      bgmEl.loop = true;
+      bgmEl.play().catch(() => {});
+      fadeIn(bgmEl, currentBgmVol, 800);
+    }
+  } else {
+    bgmEl.pause();
+  }
+}
+
+function updateHud() {
+  hud.matsu.textContent = state.matsu;
+  hud.hagiwara.textContent = state.hagiwara;
+  hud.mianzi.textContent = state.mianzi;
+  hud.zhenxin.textContent = state.zhenxin;
+}
+
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  setTimeout(() => toastEl.classList.remove("show"), 1400);
+}
+
+function effectLabel(e) {
+  const parts = [];
+  if (e.matsu) parts.push("松田好感 " + (e.matsu > 0 ? "+" : "") + e.matsu);
+  if (e.hagiwara) parts.push("研二好感 " + (e.hagiwara > 0 ? "+" : "") + e.hagiwara);
+  if (e.mianzi) parts.push("面子 " + (e.mianzi > 0 ? "+" : "") + e.mianzi);
+  if (e.zhenxin) parts.push("真心 " + (e.zhenxin > 0 ? "+" : "") + e.zhenxin);
+  return parts.join("  ");
+}
+
+function applyEffects(e) {
+  for (const k in e) { if (k in state) state[k] += e[k]; }
+  updateHud();
+  const label = effectLabel(e);
+  if (label) toast(label);
+}
+
+function setScene(key) {
+  currentSceneKey = key;
+  sceneEl.textContent = SCENES[key] || "—";
+  stage.style.background = BG[key] || "linear-gradient(160deg, #fdf6f0, #e8d8d0)";
+  const f = BG_FILE[key];
+  bgLayer.style.backgroundImage = f ? "url('images/" + f + "')" : "";
+  playBgm(SCENE_BGM[key]);
+}
+
+function setPortrait(name, expr) {
+  if (!name || NO_PORTRAIT[name]) {
+    lastPortrait = null;
+    portraitEl.classList.add("hidden");
+    portraitEl.innerHTML = "";
+    return;
+  }
+  const key = name + "|" + (expr || "default");
+  if (key === lastPortrait) return;
+  lastPortrait = key;
+  const path = portraitPath(name, expr);
+  if (!path) {
+    portraitEl.innerHTML = portraitSVG(name);
+    portraitEl.classList.remove("hidden");
+    return;
+  }
+  const img = new Image();
+  img.draggable = false;
+  img.onload = () => { portraitEl.innerHTML = ""; portraitEl.appendChild(img); };
+  img.onerror = () => { portraitEl.innerHTML = portraitSVG(name); };
+  img.src = path;
+  portraitEl.classList.remove("hidden");
+}
+
+function lineMeta(item) {
+  if (item.t === "d") return { label: item.n, color: COLORS[item.n] || "#fff", cls: "dialogue" };
+  if (item.t === "os") return { label: "松阪梅（内心）", color: "#b48ad9", cls: "os" };
+  return { label: "旁白", color: "#9a8b94", cls: "narration" };
+}
+
+function pushHistory(label, color, text) {
+  history.push({ label: label, color: color, text: text });
+}
+
+function stopTyping() {
+  if (typeTimer) { clearInterval(typeTimer); typeTimer = null; }
+  typing = false;
+}
+
+function startTyping(text) {
+  const span = document.createElement("span");
+  textEl.appendChild(span);
+  const caret = document.createElement("span");
+  caret.className = "caret";
+  caret.textContent = "▎";
+  textEl.appendChild(caret);
+  currentSpan = span;
+  currentFull = text;
+  typing = true;
+  let i = 0;
+  typeTimer = setInterval(() => {
+    if (i >= text.length) {
+      stopTyping();
+      caret.remove();
+      return;
+    }
+    span.textContent = text.slice(0, ++i);
+  }, 24);
+}
+
+function finishTyping() {
+  if (!typing) return;
+  stopTyping();
+  if (currentSpan) currentSpan.textContent = currentFull;
+  const caret = textEl.querySelector(".caret");
+  if (caret) caret.remove();
+}
+
+function showLine(item) {
+  let speaker = null;
+  if (item.t === "d") speaker = item.n;
+  else if (item.t === "os") speaker = "松阪梅";
+  else if (item.p) speaker = item.p;
+  setPortrait(speaker, item.e);
+  const meta = lineMeta(item);
+  pushHistory(meta.label, meta.color, item.x);
+  nameTag.textContent = meta.label;
+  nameTag.style.borderLeftColor = meta.color;
+  textEl.className = meta.cls;
+  textEl.innerHTML = "";
+  startTyping(item.x);
+}
+
+function showChoice(item) {
+  setPortrait(item.p || "松阪梅", item.e || "自信微笑");
+  dialogEl.classList.add("hidden");
+  choicesEl.classList.remove("hidden");
+  choicesEl.innerHTML = "";
+  const q = document.createElement("div");
+  q.className = "q";
+  q.textContent = "—— " + item.q + " ——";
+  choicesEl.appendChild(q);
+  item.opts.forEach((opt) => {
+    const btn = document.createElement("button");
+    btn.textContent = opt.a;
+    btn.onclick = () => {
+      choicesEl.classList.add("hidden");
+      choicesEl.innerHTML = "";
+      dialogEl.classList.remove("hidden");
+      playSe("choice");
+      applyEffects(opt.e || {});
+      pending = pending.concat(opt.r || []);
+      next();
+    };
+    choicesEl.appendChild(btn);
+  });
+}
+
+function next() {
+  if (flashing || sleeping) return;
+  if (typing) { finishTyping(); return; }
+  let item;
+  if (pending.length > 0) item = pending.shift();
+  else if (cursor < story.length) item = story[cursor++];
+  else return;
+
+  if (!item) { next(); return; }
+  if (item.scene) { setScene(item.scene); next(); return; }
+  if (item.t === "bgm") { playBgm(item.v); next(); return; }
+  if (item.t === "se") { playSe(item.v); next(); return; }
+  if (item.t === "end") { setPortrait(null); dialogEl.classList.add("hidden"); renderSettlement(); endingEl.classList.remove("hidden"); return; }
+  if (item.t === "flash") {
+    playSe("flash");
+    flashing = true;
+    flashEl.classList.add("run");
+    setTimeout(() => {
+      flashEl.classList.remove("run");
+      flashing = false;
+      next();
+    }, 550);
+    return;
+  }
+  if (item.t === "sleep") {
+    sleeping = true;
+    sleepEl.classList.remove("hidden");
+    setTimeout(() => {
+      sleepEl.classList.add("hidden");
+      sleeping = false;
+      next();
+    }, 1100);
+    return;
+  }
+  if (item.t === "cg") {
+    playSe("cg");
+    markCgViewed(item.img);
+    cgFromGallery = false;
+    cgImg.src = "images/" + item.img;
+    cgEl.classList.remove("hidden");
+    cgOpen = true;
+    return;
+  }
+  if (item.t === "c") { showChoice(item); return; }
+  dialogEl.classList.remove("hidden");
+  showLine(item);
+}
+
+function openBacklog() {
+  backlogList.innerHTML = "";
+  history.forEach((h) => {
+    const div = document.createElement("div");
+    div.className = "bl-entry";
+    const name = document.createElement("span");
+    name.className = "bl-name";
+    name.style.color = h.color;
+    name.textContent = h.label + "：";
+    const txt = document.createElement("span");
+    txt.className = "bl-text";
+    txt.textContent = h.text;
+    div.appendChild(name);
+    div.appendChild(txt);
+    backlogList.appendChild(div);
+  });
+  backlogList.scrollTop = backlogList.scrollHeight;
+  backlogEl.classList.remove("hidden");
+}
+
+function closeBacklog() {
+  backlogEl.classList.add("hidden");
+}
+
+const SAVE_KEY = "matsuzaka_save_slots";
+let slots = [];
+let slotMode = "save";
+
+function loadSlots() {
+  try { slots = JSON.parse(localStorage.getItem(SAVE_KEY) || "[]"); } catch (e) { slots = []; }
+  if (!Array.isArray(slots)) slots = [];
+  while (slots.length < 3) slots.push(null);
+  slots = slots.slice(0, 3);
+}
+
+function persistSlots() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(slots)); } catch (e) {}
+}
+
+function canOpenSlots() {
+  return titleEl.classList.contains("hidden")
+    && endingEl.classList.contains("hidden")
+    && choicesEl.classList.contains("hidden")
+    && !typing && !flashing && !sleeping && !cgOpen;
+}
+
+function saveSlot(i) {
+  const last = history.length ? history[history.length - 1] : null;
+  slots[i] = {
+    cursor: cursor,
+    pending: pending.slice(),
+    state: { matsu: state.matsu, hagiwara: state.hagiwara, mianzi: state.mianzi, zhenxin: state.zhenxin },
+    history: history.slice(),
+    sceneKey: currentSceneKey,
+    preview: (last ? last.label + "：" + last.text : "").slice(0, 30),
+    time: new Date().toLocaleString()
+  };
+  persistSlots();
+}
+
+function loadSlot(i) {
+  const s = slots[i];
+  if (!s) return;
+  stopTyping();
+  cursor = s.cursor;
+  pending = s.pending.slice();
+  state.matsu = s.state.matsu; state.hagiwara = s.state.hagiwara; state.mianzi = s.state.mianzi; state.zhenxin = s.state.zhenxin;
+  history = s.history.slice();
+  lastPortrait = null;
+  updateHud();
+  textEl.innerHTML = "";
+  setScene(s.sceneKey);
+  dialogEl.classList.remove("hidden");
+  choicesEl.classList.add("hidden");
+  choicesEl.innerHTML = "";
+  cgEl.classList.add("hidden"); cgOpen = false;
+  sleepEl.classList.add("hidden"); sleeping = false;
+  flashEl.classList.remove("run"); flashing = false;
+  slotsEl.classList.add("hidden");
+  titleEl.classList.add("hidden");
+  endingEl.classList.add("hidden");
+  next();
+}
+
+function renderSlots() {
+  slotList.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const s = slots[i];
+    const btn = document.createElement("button");
+    btn.className = "slot-btn";
+    const num = document.createElement("span");
+    num.className = "snum";
+    num.textContent = "存档位 " + (i + 1) + (s ? " · " + s.time : "");
+    btn.appendChild(num);
+    const prev = document.createElement("span");
+    prev.className = "sprev";
+    prev.textContent = s ? (s.preview || "（空）") : "（空）";
+    btn.appendChild(prev);
+    btn.onclick = () => {
+      if (slotMode === "save") { saveSlot(i); renderSlots(); }
+      else { loadSlot(i); }
+    };
+    slotList.appendChild(btn);
+  }
+  slotsEl.classList.remove("hidden");
+}
+
+function openSave() {
+  if (!canOpenSlots()) return;
+  slotMode = "save"; slotsTitle.textContent = "存档"; renderSlots();
+}
+
+function openLoad() {
+  if (!canOpenSlots()) return;
+  slotMode = "load"; slotsTitle.textContent = "读档"; renderSlots();
+}
+
+const CG_LIST = [
+  { file: "cg_01_英雄救美.png", name: "英雄救美" },
+  { file: "cg_04_公寓爆炸.png", name: "公寓爆炸" },
+  { file: "cg_07_灯下包扎.png", name: "灯下包扎" }
+];
+let cgViewed = {};
+let galleryReturn = "title";
+
+function loadCgViewed() {
+  try { cgViewed = JSON.parse(localStorage.getItem("matsuzaka_cg_viewed") || "{}"); } catch (e) { cgViewed = {}; }
+}
+
+function persistCgViewed() {
+  try { localStorage.setItem("matsuzaka_cg_viewed", JSON.stringify(cgViewed)); } catch (e) {}
+}
+
+function markCgViewed(file) {
+  cgViewed[file] = true;
+  persistCgViewed();
+}
+
+function settlementComment() {
+  const m = state.matsu;
+  if (m >= 5) return "松田先生看你的眼神，似乎有些不一样了……";
+  if (m >= 3) return "你们之间，已经有了一点微妙的默契。";
+  if (m >= 1) return "你和松田先生，还只是刚刚认识。";
+  return "这一章，你似乎和松田先生擦肩而过了。";
+}
+
+function renderSettlement() {
+  document.getElementById("s-matsu").textContent = state.matsu;
+  document.getElementById("s-hagiwara").textContent = state.hagiwara;
+  document.getElementById("s-mianzi").textContent = state.mianzi;
+  document.getElementById("s-zhenxin").textContent = state.zhenxin;
+  document.getElementById("s-comment").textContent = settlementComment();
+}
+
+function renderGallery() {
+  galleryList.innerHTML = "";
+  CG_LIST.forEach((cg) => {
+    const cell = document.createElement("div");
+    cell.className = "cg-cell";
+    if (cgViewed[cg.file]) {
+      const img = document.createElement("img");
+      img.src = "images/" + cg.file;
+      cell.appendChild(img);
+      cell.onclick = () => {
+        cgFromGallery = true;
+        cgImg.src = "images/" + cg.file;
+        cgEl.classList.remove("hidden");
+        cgOpen = true;
+      };
+    } else {
+      const lock = document.createElement("div");
+      lock.className = "lock";
+      lock.textContent = "？";
+      cell.appendChild(lock);
+    }
+    const cname = document.createElement("div");
+    cname.className = "cname";
+    cname.textContent = cg.name;
+    cell.appendChild(cname);
+    galleryList.appendChild(cell);
+  });
+  galleryEl.classList.remove("hidden");
+}
+
+function openGallery(from) {
+  galleryReturn = from;
+  titleEl.classList.add("hidden");
+  endingEl.classList.add("hidden");
+  renderGallery();
+}
+
+function closeGallery() {
+  galleryEl.classList.add("hidden");
+  if (galleryReturn === "ending") { endingEl.classList.remove("hidden"); }
+  else { titleEl.classList.remove("hidden"); }
+  galleryReturn = "title";
+}
+
+function reset() {
+  stopTyping();
+  cursor = 0;
+  pending = [];
+  flashing = false;
+  sleeping = false;
+  cgOpen = false;
+  cgFromGallery = false;
+  history = [];
+  state.matsu = 0; state.hagiwara = 0; state.mianzi = 0; state.zhenxin = 0;
+  lastPortrait = null;
+  updateHud();
+  sceneEl.textContent = "—";
+  stage.style.background = "linear-gradient(160deg, #fdf6f0, #e8d8d0)";
+  bgLayer.style.backgroundImage = "";
+  textEl.innerHTML = "";
+  portraitEl.classList.add("hidden");
+  portraitEl.innerHTML = "";
+  dialogEl.classList.add("hidden");
+  choicesEl.classList.add("hidden");
+  choicesEl.innerHTML = "";
+  flashEl.classList.remove("run");
+  sleepEl.classList.add("hidden");
+  cgEl.classList.add("hidden");
+  backlogEl.classList.add("hidden");
+  endingEl.classList.add("hidden");
+  titleEl.classList.remove("hidden");
+}
+
+stage.addEventListener("click", () => {
+  if (cgOpen) {
+    cgEl.classList.add("hidden"); cgOpen = false;
+    if (!cgFromGallery) { next(); } else { cgFromGallery = false; }
+    return;
+  }
+  if (!titleEl.classList.contains("hidden") || !endingEl.classList.contains("hidden")) return;
+  if (!galleryEl.classList.contains("hidden")) return;
+  if (!slotsEl.classList.contains("hidden")) return;
+  if (!backlogEl.classList.contains("hidden")) return;
+  if (choicesEl.classList.contains("hidden")) next();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.key === "Enter") {
+    e.preventDefault();
+    if (cgOpen) {
+      cgEl.classList.add("hidden"); cgOpen = false;
+      if (!cgFromGallery) { next(); } else { cgFromGallery = false; }
+      return;
+    }
+    if (!galleryEl.classList.contains("hidden")) { closeGallery(); return; }
+    if (!slotsEl.classList.contains("hidden")) { slotsEl.classList.add("hidden"); return; }
+    if (!backlogEl.classList.contains("hidden")) { closeBacklog(); return; }
+    if (!titleEl.classList.contains("hidden")) { start(); return; }
+    if (!endingEl.classList.contains("hidden")) { return; }
+    if (choicesEl.classList.contains("hidden")) next();
+  }
+});
+
+function start() {
+  titleEl.classList.add("hidden");
+  cursor = 0;
+  next();
+}
+
+document.getElementById("btn-start").onclick = start;
+document.getElementById("btn-restart").onclick = reset;
+document.getElementById("btn-log").onclick = openBacklog;
+document.getElementById("btn-log-close").onclick = closeBacklog;
+document.getElementById("btn-save").onclick = openSave;
+document.getElementById("btn-load").onclick = openLoad;
+document.getElementById("btn-slot-close").onclick = () => slotsEl.classList.add("hidden");
+document.getElementById("btn-audio").onclick = toggleAudio;
+document.getElementById("btn-gallery-title").onclick = () => openGallery("title");
+document.getElementById("btn-gallery-end").onclick = () => openGallery("ending");
+document.getElementById("btn-gallery-close").onclick = closeGallery;
+loadSlots();
+loadCgViewed();
+updateHud();
+</script>
+</body>
+</html>
